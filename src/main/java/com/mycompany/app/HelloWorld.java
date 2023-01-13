@@ -59,7 +59,7 @@ public class HelloWorld {
     public static void main(String[] args) throws Exception {
         
         String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-        String appConfigPath = rootPath + "config.properties";
+        String appConfigPath = rootPath + "/config.properties";
             
         Properties appProps = new Properties();
         appProps.load(new FileInputStream(appConfigPath));
