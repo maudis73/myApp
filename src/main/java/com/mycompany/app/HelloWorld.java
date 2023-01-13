@@ -1,5 +1,8 @@
 package com.mycompany.app;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -15,12 +18,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 public class HelloWorld {
-    public static void main(String[] args) throws Exception {
+    public static void main2(String[] args) throws Exception {
         try {
-            
-            String myKey = System.getenv("my-key");
-            System.out.println(myKey);
-            
             // The configuration for the Qpid InitialContextFactory has been supplied in
             // a jndi.properties file in the classpath, which results in it being picked
             // up automatically by the InitialContext constructor.
@@ -57,8 +56,18 @@ public class HelloWorld {
         }
     }
 
+    public static void main(String[] args) throws Exception {
+        
+        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        String appConfigPath = rootPath + "config.properties";
+            
+        Properties appProps = new Properties();
+        appProps.load(new FileInputStream(appConfigPath));
 
-     
+        String myValue = appProps.getProperty("myValue");
+        System.out.println(myValue);
+    }
+   
     private static class MyExceptionListener implements ExceptionListener {
         @Override
         public void onException(JMSException exception) {
