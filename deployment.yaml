@@ -16,11 +16,11 @@ spec:
         - name: container
           image: quay.io/mdiscepo/my-app:latest
           env: 
-            - name: my-key
+            - name: myKey
               valueFrom:
                 configMapKeyRef:
                   name: my-app-config
-                  key: my-key
+                  key: myKey
   strategy:
     type: RollingUpdate
     rollingUpdate:

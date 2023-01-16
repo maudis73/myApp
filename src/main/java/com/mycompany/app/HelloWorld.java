@@ -1,6 +1,11 @@
 package com.mycompany.app;
 
-import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.jms.Connection;
@@ -18,7 +23,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 public class HelloWorld {
-    public static void main2(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
+        dumpVars(System.getenv());
+
         try {
             // The configuration for the Qpid InitialContextFactory has been supplied in
             // a jndi.properties file in the classpath, which results in it being picked
@@ -56,18 +63,36 @@ public class HelloWorld {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        
-        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-        String appConfigPath = rootPath + "/config.properties";
-            
-        Properties appProps = new Properties();
-        appProps.load(new FileInputStream(appConfigPath));
-
-        String myValue = appProps.getProperty("myValue");
-        System.out.println(myValue);
+    private static void dumpVars(Map<String, ?> m) {
+        List<String> keys = new ArrayList<String>(m.keySet());
+        Collections.sort(keys);
+        for (String k : keys) {
+          System.out.println(k + " : " + m.get(k));
+        }      
     }
-   
+      
+    public static void main2(String[] args) {
+
+        try (InputStream input = HelloWorld.class.getClassLoader().getResourceAsStream("config.properties")) {
+
+            Properties prop = new Properties();
+
+            if (input == null) {
+                System.out.println("Sorry, unable to find config.properties");
+                return;
+            }
+
+            //load a properties file from class path, inside static method
+            prop.load(input);
+
+            //get the property value and print it out
+            System.out.println(prop.getProperty("myValue"));
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     private static class MyExceptionListener implements ExceptionListener {
         @Override
         public void onException(JMSException exception) {

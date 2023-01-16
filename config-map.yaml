@@ -4,5 +4,5 @@ metadata:
   name: my-app-config
 immutable: false
 data:
-  myKey: myValue
+  broker_url: "amqp://demo-broker-acceptor-0-svc.maurizio-namespace.svc.cluster.local:61616"
 
