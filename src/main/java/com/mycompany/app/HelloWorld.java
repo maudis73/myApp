@@ -12,8 +12,6 @@ import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
-import javax.jms.ExceptionListener;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
@@ -24,7 +22,7 @@ import javax.naming.InitialContext;
 
 public class HelloWorld {
     public static void main(String[] args) throws Exception {
-        dumpVars(System.getenv());
+        //dumpVars(System.getenv());
 
         try {
             // The configuration for the Qpid InitialContextFactory has been supplied in
@@ -46,8 +44,7 @@ public class HelloWorld {
 
             TextMessage message = session.createTextMessage("Hello world!");
             messageProducer.send(message, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
-//            TextMessage receivedMessage = (TextMessage) messageConsumer.receive(2000L);
-            TextMessage receivedMessage = (TextMessage) messageConsumer.receive();
+            TextMessage receivedMessage = (TextMessage) messageConsumer.receive(2000L);
 
             if (receivedMessage != null) {
                 System.out.println(receivedMessage.getText());
@@ -90,15 +87,6 @@ public class HelloWorld {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-        }
-    }
-
-    private static class MyExceptionListener implements ExceptionListener {
-        @Override
-        public void onException(JMSException exception) {
-            System.out.println("Connection ExceptionListener fired, exiting.");
-            exception.printStackTrace(System.out);
-            System.exit(1);
         }
     }
 }
